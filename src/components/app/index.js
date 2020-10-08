@@ -1,25 +1,44 @@
-import React from 'react'
-import { Router } from '@reach/router'
+import React              from 'react';
+import { Router }         from '@reach/router';
+import Container          from '@material-ui/core/Container';
+import { makeStyles }     from '@material-ui/core/styles';
 
-import Home from 'components/home'
 
-import lazyLoad from 'libs/utils/lazy-loading'
+import Home               from 'pages/home';
 
-import Login from 'components/login';
+const useStyles = makeStyles({
+  header: {
+    padding: '15px 24px',
+    backgroundColor: 'rgba(0,0,0,0.02)',
+    marginBottom: 20,
 
-const MultiThreadExample = lazyLoad(() =>
-  import('components/multi-thread-example'),
-)
-const ReduxExample = lazyLoad(() => import('components/redux-example'))
+    '& .app-title': {
+      marginTop: 10,
+      marginBottom: 10
+    }
+  },
+  pageWrapper: {
+  },
+});
+
 
 const App = () => {
+  const classes = useStyles();
+
   return (
-    <Router>
-      <Home path="/" />
-      <MultiThreadExample path="/multi-thread-example" />
-      <ReduxExample path="/redux-example" />
-      <Login path="/login" />
-    </Router>
+      <div className={ classes.pageWrapper }>
+        <header className={ classes.header }>
+          <h4 className="app-title">Fabric Shop</h4>
+        </header>
+
+        <div role={ 'main' }>
+        <Container maxWidth={ 'xl' }>
+          <Router>
+              <Home path="/" />
+          </Router>
+        </Container>
+        </div>
+    </div>
   )
 }
 

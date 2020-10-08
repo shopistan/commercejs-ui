@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProductCard should render the ProductCard Component correctly 1`] = `
+<WithStyles(ForwardRef(Card))
+  className="makeStyles-root-1"
+>
+  <WithStyles(ForwardRef(CardMedia))
+    className="makeStyles-media-2"
+    image=""
+    title="Lizards"
+  />
+  <WithStyles(ForwardRef(CardContent))>
+    <WithStyles(ForwardRef(Typography))
+      className="title"
+      component="h4"
+      gutterBottom={true}
+      variant="h5"
+    >
+      Lizards
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      color="textSecondary"
+      component="p"
+      variant="body2"
+    >
+      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa dolorum sit saepe accusamus magnam rem doloribus provident in est quae. Nobis, non pariatur. Dolor illo necessitatibus accusantium itaque quidem sapiente.
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(CardContent))>
+  <WithStyles(ForwardRef(CardActions))>
+    <WithStyles(ForwardRef(Button))
+      color="primary"
+      size="small"
+    >
+      Share
+    </WithStyles(ForwardRef(Button))>
+    <WithStyles(ForwardRef(Button))
+      color="primary"
+      size="small"
+    >
+      Learn More
+    </WithStyles(ForwardRef(Button))>
+  </WithStyles(ForwardRef(CardActions))>
+</WithStyles(ForwardRef(Card))>
+`;
