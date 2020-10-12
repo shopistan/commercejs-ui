@@ -17,19 +17,30 @@ const useStyles = makeStyles({
   media: {
     height: 140,
   },
+  content: {
+    padding: '15px 15px 0 15px',
+  },
+  actions: {
+    padding: '8px 15px',
+  },
   link: {
     textDecoration: 'none',
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
   },
 })
 
-const ProductCard = ({ sku, title, image, qauntity }) => {
+const ProductCard = ({ sku, title, image }) => {
   const classes = useStyles()
 
   return (
     <Card className={classes.root}>
-      <CardMedia className={classes.media} image={image} title={title} /> :
-      <CardContent>
+      <CardMedia
+        component={'img'}
+        className={classes.media}
+        image={image ?? 'https://via.placeholder.com/250?text=Product+Image'}
+        title={title}
+      />
+      <CardContent className={classes.content}>
         <Typography
           variant={'h5'}
           component={'h4'}
@@ -37,16 +48,8 @@ const ProductCard = ({ sku, title, image, qauntity }) => {
         >
           {title}
         </Typography>
-        <Typography
-          gutterBottom
-          variant={'body2'}
-          color={'textSecondary'}
-          data-label={'product-sku'}
-        >
-          Qauntity: {qauntity}
-        </Typography>
       </CardContent>
-      <CardActions>
+      <CardActions className={classes.actions}>
         <Link
           component={'button'}
           className={classes.link}
@@ -55,7 +58,7 @@ const ProductCard = ({ sku, title, image, qauntity }) => {
           to={`/product/${sku}`}
           data-label={'product-link'}
         >
-          Multi Thread
+          Read more
         </Link>
       </CardActions>
     </Card>
@@ -65,7 +68,6 @@ const ProductCard = ({ sku, title, image, qauntity }) => {
 ProductCard.propTypes = {
   title: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  qauntity: PropTypes.number.isRequired,
   sku: PropTypes.string.isRequired,
 }
 

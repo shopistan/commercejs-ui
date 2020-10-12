@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { globalHistory } from '@reach/router'
 import axios from 'axios'
+import { IconButton, Icon, Button, TextField } from '@material-ui/core'
 
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 
 import CardMedia from '@material-ui/core/CardMedia'
 import Container from '@material-ui/core/Container'
@@ -16,10 +17,44 @@ const useStyles = makeStyles({
   media: {
     height: 300,
   },
+  mb20: {
+    marginBottom: 20,
+  },
+  controlsWrap: {
+    width: 250,
+  },
+  submitBtn: {
+    width: '100%',
+  },
+  quantityControls: {
+    marginBottom: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  input: {
+    marginLeft: 10,
+    marginRight: 10,
+    width: 130,
+    '& .MuiFilledInput-input': {
+      padding: 12,
+      textAlign: 'center',
+    },
+  },
+  iconButton: {
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    '&:hover': {
+      color: '#fff',
+      backgroundColor: props => props.palette.primary.main,
+    },
+  },
 })
 
 const ProductDetail = () => {
-  const classes = useStyles()
+  const theme = useTheme()
+  const classes = useStyles(theme)
 
   const initialState = {
     location: globalHistory.location,
@@ -28,7 +63,7 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState({})
   const [, setState] = useState(initialState)
-
+  const [productCount, setProductCount] = useState(0)
   useEffect(() => {
     const removeListener = globalHistory.listen(params => {
       const { location } = params
@@ -57,6 +92,11 @@ const ProductDetail = () => {
     })()
   }, [initialState.location.pathname])
 
+  const procutAddition = val => {
+    let value = productCount
+    setProductCount(val === 'decrement' ? --value : ++value)
+  }
+
   return (
     <Container className={classes.root} maxWidth={'xl'}>
       <Grid container spacing={3}>
@@ -83,7 +123,7 @@ const ProductDetail = () => {
             {product.name ?? '---'}
           </Typography>
           <Typography
-            gutterBottom
+            className={classes.mb20}
             variant={'body1'}
             color={'textSecondary'}
             data-label={'product-sku'}
@@ -96,6 +136,41 @@ const ProductDetail = () => {
             saepe, architecto nesciunt aspernatur reprehenderit illum nobis
             voluptates molestiae. Dolores, dolor nihil?
           </Typography>
+          <div className={classes.controlsWrap}>
+            <div className={classes.quantityControls}>
+              <IconButton
+                className={classes.iconButton}
+                component="button"
+                data-label="decrease"
+                onClick={() => procutAddition('decrement')}
+              >
+                <Icon>remove</Icon>
+              </IconButton>
+              <TextField
+                type="number"
+                className={classes.input}
+                variant="filled"
+                data-label="quantity-input"
+                value={productCount}
+              />
+              <IconButton
+                className={classes.iconButton}
+                component="button"
+                data-label="increase"
+                onClick={() => procutAddition('increment')}
+              >
+                <Icon>add</Icon>
+              </IconButton>
+            </div>
+            <Button
+              className={classes.submitBtn}
+              variant="contained"
+              color="primary"
+              data-label="add-to-card"
+            >
+              Add to Cart
+            </Button>
+          </div>
         </Grid>
       </Grid>
     </Container>
