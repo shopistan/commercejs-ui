@@ -93,10 +93,8 @@ module.exports = merge(baseConfig, {
         cache: true,
         parallel: true,
         uglifyOptions: {
-          compress: {
-            warnings: false,
-            comparisons: false,
-          },
+          warnings: false,
+          comparisons: false,
           output: {
             comments: false,
             ascii_only: false,
