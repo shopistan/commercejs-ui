@@ -1,10 +1,10 @@
-import React              from 'react';
-import { Router }         from '@reach/router';
-import Container          from '@material-ui/core/Container';
-import { makeStyles }     from '@material-ui/core/styles';
+import React from 'react'
+import { Router } from '@reach/router'
+import Container from '@material-ui/core/Container'
+import { makeStyles } from '@material-ui/core/styles'
 
-
-import Home               from 'pages/home';
+import Home from 'pages/home'
+import ProductDetail from 'pages/product-detail'
 
 const useStyles = makeStyles({
   header: {
@@ -14,30 +14,29 @@ const useStyles = makeStyles({
 
     '& .app-title': {
       marginTop: 10,
-      marginBottom: 10
-    }
+      marginBottom: 10,
+    },
   },
-  pageWrapper: {
-  },
-});
-
+  pageWrapper: {},
+})
 
 const App = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
-      <div className={ classes.pageWrapper }>
-        <header className={ classes.header }>
-          <h4 className="app-title">Fabric Shop</h4>
-        </header>
+    <div className={classes.pageWrapper}>
+      <header className={classes.header}>
+        <h4 className="app-title">Fabric Shop</h4>
+      </header>
 
-        <div role={ 'main' }>
-        <Container maxWidth={ 'xl' }>
+      <div role={'main'}>
+        <Container maxWidth={'xl'}>
           <Router>
-              <Home path="/" />
+            <Home path="/" />
+            <ProductDetail path="/product/:sku" />
           </Router>
         </Container>
-        </div>
+      </div>
     </div>
   )
 }

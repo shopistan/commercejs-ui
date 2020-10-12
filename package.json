@@ -12,6 +12,7 @@
     "debug": "cross-env NODE_ENV=development webpack-dev-server --config webpack.debug.js",
     "build": "run-s lint build:no-lint",
     "test": "jest",
+    "test:watch": "jest --watch",
     "analyze": "run-s lint clean build:analyze",
     "build:no-lint": "run-s clean build:webpack",
     "build:webpack": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
@@ -93,6 +94,7 @@
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^24.1.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.1.1",
@@ -139,9 +141,18 @@
     "ie 11"
   ],
   "jest": {
-    "snapshotSerializers": ["enzyme-to-json/serializer"],
-    "setupFilesAfterEnv": ["<rootDir>/src/libs/setupTests.js"],
-    "collectCoverageFrom": ["src/**/*.js", "!src/index.js"],
-    "coverageReporters": ["text"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/libs/setupTests.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js"
+    ],
+    "coverageReporters": [
+      "text"
+    ]
   }
 }

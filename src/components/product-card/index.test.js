@@ -1,22 +1,28 @@
-import React from 'react';
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import React from 'react'
 
-import ProductCard from './index';
+import { mount } from 'enzyme'
+import ProductCard from './index'
 
-Enzyme.configure({ adapter: new Adapter() });
-
-const title = 'Lizards';
-
-
-let wrapped = shallow(<ProductCard title={ title } image={ '' } />);
+const productCard = mount(
+  <ProductCard sku="20" title="title here" image="image here" qauntity={20} />,
+)
 
 describe('ProductCard', () => {
-  it('should render the ProductCard Component correctly', () => {
-    expect(wrapped).toMatchSnapshot();
-  })
-  it('renders ProductCard children', () => {
-    expect(wrapped.find('h4')).not.toBeUndefined();
+  const title = productCard.prop('title')
+  const image = productCard.prop('image')
+  const sku = productCard.prop('sku')
+
+  it('Image should not be undefined', () => {
+    expect(image).toBeDefined()
   })
 
-});
+  it('renders ProductCard title', () => {
+    const titleElem = productCard.find('h4[data-label="product-title"]')
+    expect(titleElem.text()).toBe(title)
+  })
+
+  it('redirect to product detail page on anchor click', () => {
+    const anchor = productCard.find('a[data-label="product-link"]')
+    expect(anchor.props().href).toBe(`/product/${sku}`)
+  })
+})
