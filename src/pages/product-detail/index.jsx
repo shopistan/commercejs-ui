@@ -49,6 +49,9 @@ const useStyles = makeStyles({
       color: '#fff',
       backgroundColor: props => props.palette.primary.main,
     },
+    '&:disabled': {
+      backgroundColor: '#f9f9f9',
+    },
   },
 })
 
@@ -97,6 +100,11 @@ const ProductDetail = () => {
     setProductCount(val === 'decrement' ? --value : ++value)
   }
 
+  const inputChange = ({ target }) => {
+    const value = target.value <= 0 ? 0 : target.value
+    setProductCount(value)
+  }
+
   return (
     <Container className={classes.root} maxWidth={'xl'}>
       <Grid container spacing={3}>
@@ -143,6 +151,7 @@ const ProductDetail = () => {
                 component="button"
                 data-label="decrease"
                 onClick={() => procutAddition('decrement')}
+                disabled={productCount === 0}
               >
                 <Icon>remove</Icon>
               </IconButton>
@@ -152,6 +161,7 @@ const ProductDetail = () => {
                 variant="filled"
                 data-label="quantity-input"
                 value={productCount}
+                onChange={event => inputChange(event)}
               />
               <IconButton
                 className={classes.iconButton}
