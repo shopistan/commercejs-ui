@@ -2,9 +2,15 @@ import React from 'react'
 import { mount } from 'enzyme'
 import ProductAddDialog from './index'
 
+// const changeEvent = (event) => {
+//   console.log('event', event);
+// }
+
 // const simulateInput = (wrapper, selector, value) => {
 //   const input = wrapper.find(selector).find('input')
-//   input.simulate('change', { target: { value: value } })
+//   input.prop('onChange')(changeEvent)
+//   // { target: { value: value } }
+
 //   return wrapper.find(selector).find('input');
 // }
 
@@ -41,7 +47,9 @@ describe('ProductAddDialog', () => {
 
   // it('product name input onChange', () => {
   //     const val = 25;
-  //     const inputUp = simulateInput(productDialog, '[data-label="quantity"]', val);
-  //     expect(inputUp.props().value).toEqual(val);
+
+  //     const input = simulateInput(productDialog, '[data-label="quantity"]', val);
+
+  //     expect(input.props().value).toEqual(val);
   // });
 })

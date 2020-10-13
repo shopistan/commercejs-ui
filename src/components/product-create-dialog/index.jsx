@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import {
@@ -9,6 +9,8 @@ import {
   Button,
   TextField,
 } from '@material-ui/core'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
 
 const useStyles = makeStyles({
   root: {},
@@ -23,30 +25,29 @@ const useStyles = makeStyles({
 const ProductAddDialog = props => {
   const classes = useStyles()
 
-  const { onClose, product, open } = props
-  const [state, setState] = useState({ name: '', email: '', quantity: 0 })
-
-  useEffect(() => {
-    setState({ ...product })
-  }, [product, setState])
+  const { onClose, quantity, open } = props
+  const initialValues = { name: '', email: '', quantity: quantity }
 
   const handleClose = () => {
     onClose()
   }
 
-  const handleSave = event => {
-    event.preventDefault()
-    onClose(state)
+  const handleSave = values => {
+    onClose(values)
   }
 
-  const inputChange = useCallback(
-    ({ target }) => {
-      const value =
-        target.name === 'quantity' ? parseInt(target.value) : target.value
-      setState({ ...state, [target.name]: value })
-    },
-    [state],
-  )
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Name Required'),
+    email: Yup.string()
+      .email('Invalid email')
+      .required('Email Required'),
+    quantity: Yup.number()
+      .min(1, 'minimum 1')
+      .required('Quantit Required'),
+  })
 
   return (
     <Dialog
@@ -56,48 +57,78 @@ const ProductAddDialog = props => {
       open={open}
     >
       <DialogTitle id="simple-dialog-title">Add to Cart</DialogTitle>
-      <form onSubmit={handleSave}>
-        <DialogContent dividers>
-          <div className={classes.mb20}>
-            <TextField
-              type="text"
-              className={classes.input}
-              data-label="name"
-              name="name"
-              value={state.name ?? ''}
-              placeholder="Name"
-              onChange={event => inputChange(event)}
-            />
-          </div>
-          <div className={classes.mb20}>
-            <TextField
-              type="email"
-              className={classes.input}
-              data-label="email"
-              name="email"
-              value={state.email ?? ''}
-              placeholder="Email"
-              onChange={event => inputChange(event)}
-            />
-          </div>
-          <div className={classes.mb20}>
-            <TextField
-              type="number"
-              className={classes.input}
-              data-label="quantity"
-              name="quantity"
-              value={state.quantity ?? 0}
-              placeholder="Quantity"
-              onChange={event => inputChange(event)}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button type="submit" variant="contained" color="primary">
-            Proceed
-          </Button>
-        </DialogActions>
-      </form>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={async values => handleSave(values)}
+      >
+        {({
+          values,
+          touched,
+          errors,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <DialogContent dividers>
+                <div className={classes.mb20}>
+                  <TextField
+                    type="text"
+                    className={classes.input}
+                    data-label="name"
+                    name="name"
+                    value={values.name}
+                    placeholder="Name"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.name && touched.name && (
+                    <div className="input-feedback">{errors.name}</div>
+                  )}
+                </div>
+                <div className={classes.mb20}>
+                  <TextField
+                    type="email"
+                    className={classes.input}
+                    data-label="email"
+                    name="email"
+                    value={values.email}
+                    placeholder="Email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.email && touched.email && (
+                    <div className="input-feedback">{errors.email}</div>
+                  )}
+                </div>
+                <div className={classes.mb20}>
+                  <TextField
+                    type="number"
+                    className={classes.input}
+                    data-label="quantity"
+                    name="quantity"
+                    value={values.quantity}
+                    placeholder="Quantity"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.quantity && touched.quantity && (
+                    <div className="input-feedback">{errors.quantity}</div>
+                  )}
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <Button type="submit" variant="contained" color="primary">
+                  Proceed
+                </Button>
+              </DialogActions>
+            </form>
+          )
+        }}
+      </Formik>
     </Dialog>
   )
 }
@@ -105,7 +136,7 @@ const ProductAddDialog = props => {
 ProductAddDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  product: PropTypes.object.isRequired,
+  quantity: PropTypes.number.isRequired,
 }
 
 export default ProductAddDialog

@@ -10,6 +10,7 @@ import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import Snackbar from '@material-ui/core/Snackbar'
 
 import ProductAddDialog from '../../components/product-create-dialog'
 
@@ -70,6 +71,8 @@ const ProductDetail = () => {
   const [, setState] = useState(initialState)
   const [open, setOpen] = useState(false)
   const [selectedQuantity, setSelectedQuantity] = useState(0)
+  const [openSnacker, setOpenSnacker] = useState(false)
+  const [snackerMessage, setSnackerMessage] = useState('')
 
   useEffect(() => {
     const removeListener = globalHistory.listen(params => {
@@ -136,7 +139,40 @@ const ProductDetail = () => {
   }, [])
 
   const handleClose = value => {
+    const val = { ...value, sku: product.sku }
     setOpen(false)
+    value && saveProduct(val)
+  }
+
+  const saveProduct = async ({ name, email, sku, quantity }) => {
+    let makeData = {
+      name,
+      email,
+      items: [{ sku, quantity }],
+    }
+
+    makeData = JSON.stringify(makeData)
+
+    try {
+      await axios.post(
+        'https://36g50qhl98.execute-api.us-east-1.amazonaws.com/dev/orders/save',
+        makeData,
+      )
+
+      handleSnacker('Order placed successfully')
+    } catch (errer) {
+      handleSnacker('Something went wrong')
+    }
+  }
+
+  const handleSnacker = message => {
+    setOpenSnacker(true)
+    setSnackerMessage(message)
+
+    setTimeout(() => {
+      setOpenSnacker(false)
+      setSnackerMessage('')
+    }, 2000)
   }
 
   return (
@@ -220,14 +256,18 @@ const ProductDetail = () => {
         </Grid>
       </Grid>
 
+      {openSnacker ? (
+        <Snackbar
+          open={openSnacker}
+          onClose={handleClose}
+          message={snackerMessage}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        />
+      ) : null}
+
       {open ? (
         <ProductAddDialog
-          product={{
-            name: product.name,
-            quantity: selectedQuantity,
-            sku: product.sku,
-            email: product.email,
-          }}
+          quantity={selectedQuantity}
           open={open}
           onClose={handleClose}
         />
