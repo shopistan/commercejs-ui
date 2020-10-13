@@ -4,7 +4,7 @@ import ProductDetail from './index'
 
 const simulateInput = (wrapper, selector, value) => {
   const input = wrapper.find(selector).find('input')
-  input.simulate('change', { target: { value } })
+  input.simulate('change', { target: { value: value } })
 
   return wrapper.find(selector).find('input')
 }
@@ -12,6 +12,7 @@ const simulateInput = (wrapper, selector, value) => {
 describe('ProductDetail', () => {
   it('image placeholder loaded', () => {
     const productDetail = mount(<ProductDetail />)
+
     const image = productDetail.find('img[data-image="main-image"]')
     expect(image.prop('src')).toEqual(
       'https://via.placeholder.com/450?text=Product+Image',
@@ -20,6 +21,7 @@ describe('ProductDetail', () => {
 
   it('start product quantity input', () => {
     const productDetail = mount(<ProductDetail />)
+
     const input = productDetail
       .find('[data-label="quantity-input"]')
       .find('input')
@@ -50,11 +52,14 @@ describe('ProductDetail', () => {
       .find('[data-label="quantity-input"]')
       .find('input')
 
-    expect(input.prop('value')).toEqual(0)
+    const value = input.props().value
+
+    expect(value).toEqual(0)
   })
 
   it('product quantity input onChange', () => {
     const productDetail = mount(<ProductDetail />)
+
     let val = 5
     const inputUp = simulateInput(
       productDetail,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { globalHistory } from '@reach/router'
 import axios from 'axios'
 import { IconButton, Icon, Button, TextField } from '@material-ui/core'
@@ -10,6 +10,8 @@ import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+
+import ProductAddDialog from '../../components/product-create-dialog'
 
 const useStyles = makeStyles({
   root: {},
@@ -66,7 +68,8 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState({})
   const [, setState] = useState(initialState)
-  const [productCount, setProductCount] = useState(0)
+  const [open, setOpen] = useState(false)
+
   useEffect(() => {
     const removeListener = globalHistory.listen(params => {
       const { location } = params
@@ -88,21 +91,51 @@ const ProductDetail = () => {
         const { data } = await axios.get(
           `https://dwsaepyl0j.execute-api.us-east-1.amazonaws.com/dev/product/find/${productSku}`,
         )
-        setProduct(data.data[0])
+
+        const quantityCount = await axios.get(
+          `https://9xr7ltlkzc.execute-api.us-east-1.amazonaws.com/dev/inventory/count/${productSku}`,
+        )
+
+        let productData = data.data[0]
+        const count = quantityCount.data.data.response.count
+
+        productData = {
+          ...productData,
+          quantity: count ?? 0,
+          email: productData.email ?? '',
+        }
+
+        setProduct(productData)
       } catch (error) {
         console.log('error: ', error)
       }
     })()
   }, [initialState.location.pathname])
 
-  const procutAddition = val => {
-    let value = productCount
-    setProductCount(val === 'decrement' ? --value : ++value)
-  }
+  const procutAddition = useCallback(
+    val => {
+      let value = product.quantity ?? 0
+      const updateQauntity =
+        val === 'increment' ? ++value : value === 0 ? 0 : --value
+      setProduct({ ...product, quantity: updateQauntity })
+    },
+    [product],
+  )
 
-  const inputChange = ({ target }) => {
-    const value = target.value <= 0 ? 0 : target.value
-    setProductCount(value)
+  const inputChange = useCallback(
+    ({ target }) => {
+      const value = target.value <= 0 ? 0 : target.value
+      setProduct({ ...product, quantity: value })
+    },
+    [product],
+  )
+
+  const openDialog = useCallback(() => {
+    setOpen(true)
+  }, [])
+
+  const handleClose = value => {
+    setOpen(false)
   }
 
   return (
@@ -136,7 +169,7 @@ const ProductDetail = () => {
             color={'textSecondary'}
             data-label={'product-sku'}
           >
-            Qauntity: {product.qauntity ?? '0'}
+            Qauntity: {product.quantity ?? '0'}
           </Typography>
           <Typography variant={'body1'} color={'textSecondary'} component={'p'}>
             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci
@@ -151,7 +184,7 @@ const ProductDetail = () => {
                 component="button"
                 data-label="decrease"
                 onClick={() => procutAddition('decrement')}
-                disabled={productCount === 0}
+                disabled={product.quantity === 0}
               >
                 <Icon>remove</Icon>
               </IconButton>
@@ -160,7 +193,7 @@ const ProductDetail = () => {
                 className={classes.input}
                 variant="filled"
                 data-label="quantity-input"
-                value={productCount}
+                value={product.quantity ?? 0}
                 onChange={event => inputChange(event)}
               />
               <IconButton
@@ -177,12 +210,27 @@ const ProductDetail = () => {
               variant="contained"
               color="primary"
               data-label="add-to-card"
+              disabled={product.quantity === 0}
+              onClick={openDialog}
             >
               Add to Cart
             </Button>
           </div>
         </Grid>
       </Grid>
+
+      {open ? (
+        <ProductAddDialog
+          product={{
+            name: product.name,
+            quantity: product.quantity,
+            sku: product.sku,
+            email: product.email,
+          }}
+          open={open}
+          onClose={handleClose}
+        />
+      ) : null}
     </Container>
   )
 }
