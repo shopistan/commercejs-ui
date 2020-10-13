@@ -69,6 +69,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState({})
   const [, setState] = useState(initialState)
   const [open, setOpen] = useState(false)
+  const [selectedQuantity, setSelectedQuantity] = useState(0)
 
   useEffect(() => {
     const removeListener = globalHistory.listen(params => {
@@ -113,21 +114,21 @@ const ProductDetail = () => {
   }, [initialState.location.pathname])
 
   const procutAddition = useCallback(
-    val => {
-      let value = product.quantity ?? 0
+    (val, key) => {
+      let value = val
       const updateQauntity =
-        val === 'increment' ? ++value : value === 0 ? 0 : --value
-      setProduct({ ...product, quantity: updateQauntity })
+        key === 'increment' ? ++value : value === 0 ? 0 : --value
+      setSelectedQuantity(updateQauntity)
     },
-    [product],
+    [setSelectedQuantity],
   )
 
   const inputChange = useCallback(
     ({ target }) => {
       const value = target.value <= 0 ? 0 : target.value
-      setProduct({ ...product, quantity: value })
+      setSelectedQuantity(value)
     },
-    [product],
+    [setSelectedQuantity],
   )
 
   const openDialog = useCallback(() => {
@@ -183,8 +184,8 @@ const ProductDetail = () => {
                 className={classes.iconButton}
                 component="button"
                 data-label="decrease"
-                onClick={() => procutAddition('decrement')}
-                disabled={product.quantity === 0}
+                onClick={() => procutAddition(selectedQuantity, 'decrement')}
+                disabled={selectedQuantity === 0}
               >
                 <Icon>remove</Icon>
               </IconButton>
@@ -193,14 +194,14 @@ const ProductDetail = () => {
                 className={classes.input}
                 variant="filled"
                 data-label="quantity-input"
-                value={product.quantity ?? 0}
+                value={selectedQuantity ?? 0}
                 onChange={event => inputChange(event)}
               />
               <IconButton
                 className={classes.iconButton}
                 component="button"
                 data-label="increase"
-                onClick={() => procutAddition('increment')}
+                onClick={() => procutAddition(selectedQuantity, 'increment')}
               >
                 <Icon>add</Icon>
               </IconButton>
@@ -210,7 +211,7 @@ const ProductDetail = () => {
               variant="contained"
               color="primary"
               data-label="add-to-card"
-              disabled={product.quantity === 0}
+              disabled={selectedQuantity === 0}
               onClick={openDialog}
             >
               Add to Cart
@@ -223,7 +224,7 @@ const ProductDetail = () => {
         <ProductAddDialog
           product={{
             name: product.name,
-            quantity: product.quantity,
+            quantity: selectedQuantity,
             sku: product.sku,
             email: product.email,
           }}

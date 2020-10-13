@@ -3,13 +3,9 @@ import { mount } from 'enzyme'
 import ProductAddDialog from './index'
 
 // const simulateInput = (wrapper, selector, value) => {
-//   const input = wrapper.find(selector)
-//   console.log('selector: ', selector)
-//   // product[target.name] = value;
-
+//   const input = wrapper.find(selector).find('input')
 //   input.simulate('change', { target: { value: value } })
-
-//   return wrapper.find(selector)
+//   return wrapper.find(selector).find('input');
 // }
 
 const handleClose = event => {
@@ -45,7 +41,7 @@ describe('ProductAddDialog', () => {
 
   // it('product name input onChange', () => {
   //     const val = 25;
-  //     const inputUp = simulateInput(productDialog, 'input[name="quantity"]', val);
+  //     const inputUp = simulateInput(productDialog, '[data-label="quantity"]', val);
   //     expect(inputUp.props().value).toEqual(val);
-  // })
+  // });
 })

@@ -45,7 +45,7 @@ const ProductAddDialog = props => {
         target.name === 'quantity' ? parseInt(target.value) : target.value
       setState({ ...state, [target.name]: value })
     },
-    [setState, state],
+    [state],
   )
 
   return (
@@ -66,7 +66,7 @@ const ProductAddDialog = props => {
               name="name"
               value={state.name ?? ''}
               placeholder="Name"
-              onChange={inputChange}
+              onChange={event => inputChange(event)}
             />
           </div>
           <div className={classes.mb20}>
@@ -77,7 +77,7 @@ const ProductAddDialog = props => {
               name="email"
               value={state.email ?? ''}
               placeholder="Email"
-              onChange={inputChange}
+              onChange={event => inputChange(event)}
             />
           </div>
           <div className={classes.mb20}>
@@ -88,7 +88,7 @@ const ProductAddDialog = props => {
               name="quantity"
               value={state.quantity ?? 0}
               placeholder="Quantity"
-              onChange={inputChange}
+              onChange={event => inputChange(event)}
             />
           </div>
         </DialogContent>
